@@ -4,6 +4,7 @@ This module contains the CountVectorizer class for NLP tasks.
 """
 
 from collections import defaultdict
+from typing import DefaultDict, Tuple
 
 import numpy as np
 
@@ -23,15 +24,16 @@ class CountVectorizer:
 
         The `word_frequencies` attribute is a dictionary of word frequencies by class.
 
-        Makes use of [Python's defaultdict](https://docs.python.org/3/library/collections.html#collections.defaultdict) to initialize the dictionary with 0 for each key.
-        This means that if a key is not found in the dictionary, the value is 0 and no KeyError exception is raised.
+        Makes use of [Python's defaultdict](https://docs.python.org/3/library/collections.html#collections.defaultdict)
+        to initialize the dictionary with 0 for each key. This means that if a key is not found in the
+        dictionary, the value is 0 and no KeyError exception is raised.
 
         """
         # TODO ASSIGNMENT-2: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+        self.word_frequencies:  DefaultDict[Tuple[str, int], int] = defaultdict(int)  # or lambda: 1 for a specific initial value
 
     def build_word_frequencies(
-        self, tweets: list[list[str]], labels: list[str]
+            self, tweets: list[list[str]], labels: list[str]
     ) -> None:
         """Builds a dictionary of word frequencies by counting the number of occurrences of each word in each class.
 
@@ -51,12 +53,16 @@ class CountVectorizer:
 
         """
         # TODO ASSIGNMENT-2: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+        for i in range(len(tweets)):
+            label = int(labels[i][0])
+            for tweet in tweets[i]:
+                self.word_frequencies[(tweet, label)] += 1
 
     def get_features(self, tweet: list[str]) -> np.ndarray:
         """Returns a feature vector for a given tweet.
 
-        The feature vector is a row vector of the form [1, pos, neg], where pos is the number of positive words in the tweet and neg is the number of negative words in the tweet.
+        The feature vector is a row vector of the form [1, pos, neg], where pos is the number of positive words in
+        the tweet and neg is the number of negative words in the tweet.
 
         Args:
             tweet (list[str]): a tokenized tweet
@@ -66,4 +72,12 @@ class CountVectorizer:
         """
 
         # TODO ASSIGNMENT-2: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+
+        feature_vector: DefaultDict[int, int] = defaultdict(int)
+
+        for word in tweet:
+            for (word_key, label), count in self.word_frequencies.items():
+                if word_key == word:
+                    feature_vector[label] += count
+
+        return np.array([1, feature_vector[1], feature_vector[0]])
