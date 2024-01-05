@@ -43,6 +43,15 @@ processor = TweetProcessor()
             "URLs with the http-protocol like this one: http://example.com and http://another.com",
             "URLs with the http-protocol like this one:  and ",
         ),
+        # For cases like re.sub(r'http\S+', '', tweet) -> this would also remove the words in a text
+        (
+            "URLs with the http-protocol like this one: http://example.com and http://another.com",
+            "URLs with the http-protocol like this one:  and ",
+        ),
+        (
+            "URLs with the https protocol like this one: https://example.com and https://another.com",
+            "URLs with the https protocol like this one:  and ",
+        ),
         ("https://example.com/with/path?query=1", ""),
     ],
 )
@@ -90,6 +99,7 @@ def test_remove_hashtags_from_tweet(input_tweet, expected_result):
     ],
 )
 def test_tokenize(input_tweet, expected_tokens):
+    print(processor.tokenize(input_tweet))
     assert processor.tokenize(input_tweet) == expected_tokens
 
 
@@ -178,6 +188,7 @@ def test_remove_punctuation(tokenized_tweet, expected_filtered_tweet):
     ],
 )
 def test_stem(tokenized_tweet, expected_result):
+    print(processor.stem(tokenized_tweet))
     assert processor.stem(tokenized_tweet) == expected_result
 
 

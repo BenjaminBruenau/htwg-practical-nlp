@@ -15,11 +15,11 @@ You can follow the `TODO ASSIGNMENT-1` comments to find the places where you nee
 import re
 import string
 
-from nltk import TweetTokenizer, PorterStemmer
+from nltk import PorterStemmer, TweetTokenizer
 from nltk.corpus import stopwords
 
+# nltk.download('stopwords')
 
-#nltk.download('stopwords')
 
 class TweetProcessor:
     # TODO ASSIGNMENT-1: Add a `stemmer` attribute to the class
@@ -43,8 +43,7 @@ class TweetProcessor:
         """
         # TODO ASSIGNMENT-1: implement this function
         # TODO: What about similar protocols like ftp or others like mailto: & file:/// ?
-        return re.sub(r'https?://\S+', '', tweet)
-
+        return re.sub(r"https?://\S+", "", tweet)
 
     @staticmethod
     def remove_hashtags(tweet: str) -> str:
@@ -58,7 +57,7 @@ class TweetProcessor:
             str: the tweet without hashtags symbols
         """
         # TODO ASSIGNMENT-1: implement this function
-        return re.sub(r'#+', '', tweet)
+        return re.sub(r"#+", "", tweet)
 
     def tokenize(self, tweet: str) -> list[str]:
         """Tokenizes a tweet using the nltk TweetTokenizer.
@@ -86,9 +85,9 @@ class TweetProcessor:
             list[str]: the tokenized tweet without stopwords
         """
         # TODO ASSIGNMENT-1: implement this function
-        #print(stopwords.words('english'))
-        #word.lower() ?
-        return [word for word in tokens if word not in stopwords.words('english')]
+        # print(stopwords.words('english'))
+        # word.lower() ?
+        return [word for word in tokens if word not in stopwords.words("english")]
 
     @staticmethod
     def remove_punctuation(tokens: list[str]) -> list[str]:
@@ -101,7 +100,7 @@ class TweetProcessor:
             list[str]: the tokenized tweet without punctuation
         """
         # TODO ASSIGNMENT-1: implement this function
-        #[word for word in tokens if word not in ['(', ')', '?', ':', ';', ',', '.', '!', '/', '"', "'"]]
+        # [word for word in tokens if word not in ['(', ')', '?', ':', ';', ',', '.', '!', '/', '"', "'"]]
         return [word for word in tokens if word not in string.punctuation]
 
     def stem(self, tokens: list[str]) -> list[str]:
@@ -126,5 +125,10 @@ class TweetProcessor:
             list[str]: the processed tweet
         """
         # TODO ASSIGNMENT-1: implement this function
-        return self.stem(self.remove_punctuation(
-            self.remove_stopwords(self.tokenize(self.remove_hashtags(self.remove_urls(tweet))))))
+        return self.stem(
+            self.remove_punctuation(
+                self.remove_stopwords(
+                    self.tokenize(self.remove_hashtags(self.remove_urls(tweet)))
+                )
+            )
+        )
