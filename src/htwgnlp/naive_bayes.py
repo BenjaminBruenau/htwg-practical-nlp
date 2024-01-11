@@ -17,7 +17,7 @@ from collections import Counter
 
 import numpy as np
 import pandas as pd
-
+import math
 
 class NaiveBayes:
     """Naive Bayes classifier for NLP tasks.
@@ -42,7 +42,11 @@ class NaiveBayes:
             alpha (float, optional): the smoothing parameter. Defaults to 1.0.
         """
         # TODO ASSIGNMENT-3: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+        self.word_probabilities = None
+        self.df_freqs = None
+        self.log_ratios = None
+        self.logprior = 0
+        self.alpha = alpha
 
     @property
     def logprior(self) -> float:
@@ -52,7 +56,7 @@ class NaiveBayes:
             float: the logprior
         """
         # TODO ASSIGNMENT-3: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+        return self._logprior
 
     @logprior.setter
     def logprior(self, y: np.ndarray) -> None:
@@ -64,22 +68,48 @@ class NaiveBayes:
             y (np.ndarray): a numpy array of class labels of shape (m, 1), where m is the number of samples
         """
         # TODO ASSIGNMENT-3: implement this method
-        raise NotImplementedError("This method needs to be implemented.")
+        if not isinstance(y, np.ndarray):
+            self._logprior = y
+            return
+        pos = np.where(y == 1) #y[np.where(y == 1)] -> get all elements instead of indices
+        p_pos = len(pos[0]) / len(y)
+
+        self._logprior = np.log(p_pos) - np.log(1 - p_pos)
 
     def _get_word_frequencies(self, X: list[list[str]], y: np.ndarray) -> None:
         """Computes the word frequencies per class.
 
-        For a given list of tokenized text and a numpy array of class labels, the method computes the word frequencies for each class and stores them as a pandas DataFrame in the `df_freqs` attribute.
+        For a given list of tokenized text and a numpy array of class labels, the method computes the word
+        frequencies for each class and stores them as a pandas DataFrame in the `df_freqs` attribute.
 
-        In pandas, if a word does not occur in a class, the frequency should be set to 0, and not to NaN. Also make sure that the frequencies are of type int.
+        In pandas, if a word does not occur in a class, the frequency should be set to 0, and not to NaN. Also make
+        sure that the frequencies are of type int.
 
-        Note that the this implementation of Naive Bayes is designed for binary classification.
+        Note that the/this implementation of Naive Bayes is designed for binary classification.
 
         Args:
             X (list[list[str]]): a list of tokenized text samples of length m, where m is the number of samples.
             y (np.ndarray): a numpy array of class labels of shape (m, 1), where m is the number of samples.
         """
         # TODO ASSIGNMENT-3: implement this method
+        counter_pos = Counter()
+        counter_neg = Counter()
+        for item in zip(X, y):
+            c = Counter(item[0])
+            if item[1] == 0:
+                counter_neg = counter_neg + c
+            else:
+                counter_pos = counter_pos + c
+            print(list)
+        df_pos = pd.DataFrame.from_dict(counter_pos, orient='index')#.reset_index()
+        #df_pos = df_pos.rename(columns={'index':'word', 0:'count'})
+        df_pos["Class"] = 1
+
+        df_neg = pd.DataFrame.from_dict(counter_neg, orient='index')#.reset_index()
+        #df_neg = df_neg.rename(columns={'index':'word', 0:'count'})
+        df_neg["Class"] = 0
+
+        df = df_pos.(df_neg)#.fillna(0)
         raise NotImplementedError("This method needs to be implemented.")
 
     def _get_word_probabilities(self) -> None:
